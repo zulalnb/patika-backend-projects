@@ -43,6 +43,23 @@ app.post('/photos', async (req, res) => {
   res.redirect('/');
 });
 
+app.get('/photos/:id', async (req, res) => {
+  try {
+    const photo = await Photo.findById(req.params.id);
+    if (!photo) {
+      return res.status(404).render('error', {
+        message: 'Photo not found.',
+      });
+    }
+    res.render('photo', { photo });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render('error', {
+      message: 'Unable to load photo.',
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

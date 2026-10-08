@@ -331,6 +331,13 @@ p {
 .tm-category-item {
   margin: 16px;
 }
+.tm-catalog-item-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
 
 .tm-category-link {
   color: #3399cc;
