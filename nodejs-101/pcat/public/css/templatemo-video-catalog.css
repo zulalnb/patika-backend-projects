@@ -255,20 +255,22 @@ p {
   font-size: 2.5rem;
 }
 .tm-catalog-item-list {
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .tm-catalog-item {
-  max-width: 462px;
+  /* max-width: 462px; */
   display: flex;
   flex-direction: column;
   margin-bottom: 64px;
 }
 
 .tm-thumbnail-container {
+  width: 100%;
   overflow: hidden;
 }
 .tm-thumbnail-container img {
+  width: 100%;
   transition: all 0.3s ease;
 }
 .tm-thumbnail-container:hover img {
