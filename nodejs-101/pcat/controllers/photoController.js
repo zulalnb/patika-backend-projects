@@ -3,9 +3,26 @@ const path = require('path');
 const fs = require('fs');
 
 exports.getAllPhotos = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
   try {
-    const photos = await Photo.find().sort({ dateCreated: -1 });
-    res.render('index', { photos });
+    const totalPhotos = await Photo.countDocuments();
+    const totalPages = Math.ceil(totalPhotos / limit);
+
+    const photos = await Photo.find()
+      .sort({ dateCreated: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.render('index', {
+      photos,
+      currentPage: page,
+      totalPages,
+      nextPage: page < totalPages ? page + 1 : null,
+      prevPage: page > 1 ? page - 1 : null,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).render('error', {
@@ -46,7 +63,13 @@ exports.createPhoto = async (req, res) => {
     const basename = path.basename(image.name, extension);
     const filename = `${basename}-${crypto.randomUUID()}${extension}`;
 
-    const uploadPath = path.join(__dirname, '..', 'public', 'uploads', filename);
+    const uploadPath = path.join(
+      __dirname,
+      '..',
+      'public',
+      'uploads',
+      filename
+    );
 
     await image.mv(uploadPath);
 

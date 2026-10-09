@@ -72,21 +72,25 @@
             <!-- Catalog Paging Buttons -->
             <div>
               <ul class="nav tm-paging-links">
-                <li class="nav-item active">
-                  <a href="#" class="nav-link tm-paging-link">1</a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link tm-paging-link">2</a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link tm-paging-link">3</a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link tm-paging-link">4</a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link tm-paging-link">></a>
-                </li>
+                <% if (prevPage) { %>
+                  <li class="nav-item">
+                    <a href="/?page=<%= prevPage %>" class="nav-link tm-paging-link">&lt;</a>
+                  </li>
+                <% } %>
+
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                  <li class="nav-item <%= currentPage === i ? 'active' : '' %>">
+                    <a href="/?page=<%= i %>" class="nav-link tm-paging-link">
+                      <%= i %>
+                    </a>
+                  </li>
+                <% } %>
+
+                <% if (nextPage) { %>
+                  <li class="nav-item">
+                    <a href="/?page=<%= nextPage %>" class="nav-link tm-paging-link">&gt;</a>
+                  </li>
+                <% } %>
               </ul>
             </div>
           </main>
