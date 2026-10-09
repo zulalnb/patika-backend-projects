@@ -26,7 +26,11 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(fileUpload());
-app.use(methodOverride('_method'));
+app.use(
+  methodOverride('_method', {
+    methods: ['POST', 'GET'],
+  })
+);
 
 // Routes
 app.get('/', async (req, res) => {
@@ -141,6 +145,30 @@ app.put('/photos/:id', async (req, res) => {
     console.error(error);
     res.status(500).render('error', {
       message: 'Unable to update photo.',
+    });
+  }
+});
+
+app.delete('/photos/:id', async (req, res) => {
+  try {
+    const photo = await Photo.findById(req.params.id);
+
+    if (!photo) {
+      return res.status(404).render('error', {
+        message: 'Photo not found.',
+      });
+    }
+
+    const imagePath = path.join(__dirname, 'public', photo.image);
+
+    fs.unlinkSync(imagePath);
+
+    await Photo.findByIdAndDelete(req.params.id);
+    res.redirect('/');
+  } catch (error) {
+    console.error(error);
+    res.status(500).render('error', {
+      message: 'Unable to delete photo.',
     });
   }
 });
