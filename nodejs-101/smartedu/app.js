@@ -1,5 +1,6 @@
 const express = require('express');
 require('ejs');
+const pageRoute = require('./routes/pageRoute');
 
 const port = 3000;
 const app = express();
@@ -17,13 +18,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.get('/', (req, res) => {
-  res.status(200).render('index');
-});
-
-app.get('/about', (req, res) => {
-  res.status(200).render('about');
-});
+app.use('/', pageRoute);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
