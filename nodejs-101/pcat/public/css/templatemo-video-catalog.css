@@ -212,6 +212,12 @@ p {
 .tm-icon-download:before {
   content: '\f019';
 }
+.tm-icon-delete:before {
+  content: '\f2ed';
+}
+.tm-icon-update:before {
+  content: '\f044';
+}
 .tm-icon-submit:before {
   content: '\f1d8';
 }
@@ -230,6 +236,7 @@ p {
   background-color: #3399cc;
 }
 
+.tm-btn-action span, 
 .tm-btn-download span {
   padding-top: 10px;
 }
@@ -419,6 +426,7 @@ p {
   color: #3399cc;
 }
 
+.tm-btn-action,
 .tm-likes-box,
 .tm-btn-download {
   width: 280px;

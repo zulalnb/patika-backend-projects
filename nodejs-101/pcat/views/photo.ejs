@@ -46,15 +46,16 @@
                 <!-- Share box -->
                 <div class="tm-bg-gray tm-share-box">
                   <div class="text-center">
-                    <button
-                      class="btn btn-primary p-0 mb-4 tm-btn-animate tm-btn-download tm-icon-download"
+                    <a
+                      href="/photos/<%= photo._id %>/edit"
+                      class="btn btn-primary p-0 mb-4 tm-btn-animate tm-btn-action tm-icon-update"
                     >
                       <span>Update Details</span>
-                    </button>
+                    </a>
                   </div>
                   <div class="text-center">
                     <button
-                      class="btn btn-danger p-0 tm-btn-animate tm-btn-download tm-icon-download"
+                      class="btn btn-danger p-0 tm-btn-animate tm-btn-action tm-icon-delete"
                     >
                       <span>Delete Photo</span>
                     </button>
