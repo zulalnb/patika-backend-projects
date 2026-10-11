@@ -18,10 +18,10 @@ exports.createCategory = async (req, res) => {
     }
 
     if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
       return res.status(409).json({
-        message: 'A category with this name already exists',
-        field: Object.keys(error.keyValue)[0],
-        value: Object.values(error.keyValue)[0],
+        message: `A category with this ${field} already exists`,
+        field,
       });
     }
 

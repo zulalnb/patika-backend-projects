@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 app.use('/', pageRoute);
 app.use('/courses', courseRoute);
 app.use('/categories', categoryRoute);
-app.use('/users', authRoute)
+app.use('/auth', authRoute)
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

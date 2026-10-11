@@ -7,7 +7,9 @@ exports.createCourse = async (req, res) => {
 
     const course = await Course.create({ name, description, category });
 
-    res.status(201).json({ message: 'Course created successfully', course });
+    return res
+      .status(201)
+      .json({ message: 'Course created successfully', course });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).json({
