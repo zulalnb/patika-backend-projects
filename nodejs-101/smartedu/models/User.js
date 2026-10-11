@@ -22,6 +22,11 @@ const UserSchema = new Schema({
     required: [true, 'Please provide password'],
     minlength: [6, 'Password must be at least 6 characters'],
   },
+  role: {
+    type: String,
+    enum: ['student', 'teacher', 'admin'],
+    default: 'student',
+  },
   createdAt: {
     type: Date,
     default: Date.now,

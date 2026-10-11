@@ -18,7 +18,7 @@
           <div class="col-xl-12 col-md-12 col-sm-12">
             <div class="contact_form">
               <div id="message"></div>
-              <form method="post" action="/auth/signup" >
+              <form method="post" action="/auth/signup">
                 <div class="row row-fluid">
                   <div class="offset-1 col-lg-10 col-md-10 col-sm-10">
                     <input
@@ -37,6 +37,12 @@
                       class="form-control"
                       placeholder="Email"
                     />
+                  </div>
+                  <div class="offset-1 col-lg-10 col-md-10 col-sm-10">
+                    <select class="form-control" name="role">
+                      <option value="student">student</option>
+                      <option value="teacher">teacher</option>
+                    </select>
                   </div>
                   <div class="offset-1 col-lg-10 col-md-10 col-sm-10">
                     <input

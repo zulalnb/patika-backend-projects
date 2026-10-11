@@ -3,20 +3,11 @@ const bcrypt = require('bcrypt');
 
 exports.createUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, role, password } = req.body;
 
-    const user = await User.create({ name, email, password });
+    await User.create({ name, email, role, password });
 
-    res.status(201).json({
-      message: 'User created successfully',
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      },
-    });
+    res.status(201).redirect('/login');
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).json({
