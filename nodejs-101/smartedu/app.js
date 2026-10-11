@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', pageRoute);
-app.use('/api/course', courseRoute);
+app.use('/courses', courseRoute);
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
