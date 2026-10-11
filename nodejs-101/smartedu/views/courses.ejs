@@ -29,12 +29,12 @@
               <div class="col-lg-6 col-md-6 col-12">
                 <div class="course-item mb-5">
                   <div class="image-blog">
-                    <img src="images/blog_1.jpg" alt="" class="img-fluid" />
+                    <img src="/images/blog_1.jpg" alt="" class="img-fluid" />
                   </div>
                   <div class="course-br">
                     <div class="course-title">
                       <h2>
-                        <a href="course-single.html"><%= courses[i].name %></a>
+                        <a href="/courses/<%= courses[i].slug %>"><%= courses[i].name %></a>
                       </h2>
                     </div>
                     <div class="course-desc">
@@ -46,8 +46,8 @@
                   <div class="course-meta-bot">
                     <ul>
                       <li>
-                        <i class="fa fa-user" aria-hidden="true"></i>Teacher
-                        Name
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                        Teacher Name
                       </li>
                     </ul>
                   </div>
@@ -98,8 +98,8 @@
     <%- include('partials/_footer.ejs') %>
 
     <!-- ALL JS FILES -->
-    <script src="js/all.js"></script>
+    <script src="/js/all.js"></script>
     <!-- ALL PLUGINS -->
-    <script src="js/custom.js"></script>
+    <script src="/js/custom.js"></script>
   </body>
 </html>

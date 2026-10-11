@@ -34,8 +34,26 @@ exports.createCourse = async (req, res) => {
 exports.getAllCourses = async (req, res) => {
   try {
     const courses = await Course.find();
-    console.log(courses);
     return res.status(200).render('courses', { courses });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+};
+
+exports.getCourseBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const course = await Course.findOne({ slug });
+
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    return res.status(200).render('course-single', { course });
   } catch (error) {
     console.error(error);
 
