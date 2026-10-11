@@ -5,3 +5,7 @@ exports.getHomePage = (req, res) => {
 exports.getAboutPage = (req, res) => {
   res.status(200).render('about');
 };
+
+exports.getRegisterPage = (req, res) => {
+  res.status(200).render('register');
+};
