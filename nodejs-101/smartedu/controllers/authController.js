@@ -53,7 +53,7 @@ exports.loginUser = async (req, res) => {
         if (same) {
           // USER SESSION
           req.session.userID = user._id;
-          res.status(200).redirect('/');
+          res.status(200).redirect('/dashboard');
         }
       });
     }

@@ -32,8 +32,10 @@
           </li>
 
           <% if(userIN) { %>
-          <li class="nav-item">
-            <a class="nav-link" href="dashboard.html">Dashboard</a>
+          <li
+            class="nav-item <%= currentPath === '/courses' ? 'active' : '' %>"
+          >
+            <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
           <% } %>
           
