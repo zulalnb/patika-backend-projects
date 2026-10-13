@@ -40,7 +40,7 @@ exports.createCourse = async (req, res) => {
 
 exports.getAllCourses = async (req, res) => {
   try {
-    const { category: categorySlug } = req.query;
+    const { category: categorySlug, search } = req.query;
 
     const categories = await Category.find();
 
@@ -52,7 +52,22 @@ exports.getAllCourses = async (req, res) => {
     if (categorySlug) {
       filter = { category: category._id };
     }
-    const courses = await Course.find(filter)
+
+    if (search) {
+      filter = { name: search };
+    }
+
+    if (!search && !categorySlug) {
+      filter.name = '';
+      filter.category = null;
+    }
+
+    const courses = await Course.find({
+      $or: [
+        { name: { $regex: '.*' + filter.name + '.*', $options: 'i' } },
+        { category: filter.category },
+      ],
+    })
       .sort({ createdAt: -1 })
       .populate('user');
     return res.status(200).render('courses', { courses, categories });
@@ -70,12 +85,15 @@ exports.getCourseBySlug = async (req, res) => {
     const { slug } = req.params;
     const course = await Course.findOne({ slug }).populate('user');
     const user = await User.findById(req.session.userId);
+    const categories = await Category.find();
 
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    return res.status(200).render('course-single', { user, course });
+    return res
+      .status(200)
+      .render('course-single', { user, categories, course });
   } catch (error) {
     console.error(error);
 
