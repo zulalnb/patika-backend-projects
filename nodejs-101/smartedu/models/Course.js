@@ -29,6 +29,10 @@ const CourseSchema = new Schema({
     ref: 'Category',
     required: [true, 'Please provide course category'],
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -5,7 +5,12 @@ exports.createCourse = async (req, res) => {
   try {
     const { name, description, category } = req.body;
 
-    await Course.create({ name, description, category });
+    await Course.create({
+      name,
+      description,
+      category,
+      user: req.session.userID,
+    });
 
     return res.status(201).redirect('/courses');
   } catch (error) {
@@ -46,7 +51,9 @@ exports.getAllCourses = async (req, res) => {
     if (categorySlug) {
       filter = { category: category._id };
     }
-    const courses = await Course.find(filter).sort({ createdAt: -1 });
+    const courses = await Course.find(filter)
+      .sort({ createdAt: -1 })
+      .populate('user');
     return res.status(200).render('courses', { courses, categories });
   } catch (error) {
     console.error(error);
@@ -60,7 +67,7 @@ exports.getAllCourses = async (req, res) => {
 exports.getCourseBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
-    const course = await Course.findOne({ slug });
+    const course = await Course.findOne({ slug }).populate('user');
 
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
