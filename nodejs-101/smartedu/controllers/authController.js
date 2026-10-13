@@ -39,17 +39,36 @@ exports.loginUser = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (user) {
-      bcrypt.compare(password, user.password, (err, same) => {
-        if (same) {
-          // USER SESSION
-          req.session.userID = user._id;
-          res.status(200).redirect('/dashboard');
-        }
+    if (!user) {
+      return res.status(401).render('login', {
+        error: 'Invalid email or password',
       });
     }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        message: 'Invalid email or password',
+      });
+    }
+
+    req.session.userID = user._id;
+
+    req.session.save((error) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({
+          message: 'Internal server error',
+        });
+      }
+
+      return res.redirect('/dashboard');
+    });
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+
+    return res.status(500).json({
       message: 'Internal server error',
     });
   }

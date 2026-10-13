@@ -5,11 +5,9 @@ exports.createCourse = async (req, res) => {
   try {
     const { name, description, category } = req.body;
 
-    const course = await Course.create({ name, description, category });
+    await Course.create({ name, description, category });
 
-    return res
-      .status(201)
-      .json({ message: 'Course created successfully', course });
+    return res.status(201).redirect('/courses');
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).json({
@@ -48,7 +46,7 @@ exports.getAllCourses = async (req, res) => {
     if (categorySlug) {
       filter = { category: category._id };
     }
-    const courses = await Course.find(filter);
+    const courses = await Course.find(filter).sort({ createdAt: -1 });
     return res.status(200).render('courses', { courses, categories });
   } catch (error) {
     console.error(error);
