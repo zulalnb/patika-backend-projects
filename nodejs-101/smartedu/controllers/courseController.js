@@ -1,5 +1,6 @@
 const Course = require('../models/Course');
 const Category = require('../models/Category');
+const User = require('../models/User');
 
 exports.createCourse = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ exports.createCourse = async (req, res) => {
       name,
       description,
       category,
-      user: req.session.userID,
+      user: req.session.userId,
     });
 
     return res.status(201).redirect('/courses');
@@ -68,12 +69,51 @@ exports.getCourseBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
     const course = await Course.findOne({ slug }).populate('user');
+    const user = await User.findById(req.session.userId);
 
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    return res.status(200).render('course-single', { course });
+    return res.status(200).render('course-single', { user, course });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+};
+
+exports.enrollCourse = async (req, res) => {
+  try {
+    const courseId = req.body.course_id;
+    const user = await User.findById(req.session.userId);
+
+    if (!user.courses.includes(courseId)) {
+      user.courses.push({ _id: courseId });
+      await user.save();
+    }
+
+    res.status(200).redirect('/dashboard');
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+};
+
+exports.releaseCourse = async (req, res) => {
+  try {
+    const user = await User.findById(req.session.userId);
+
+    await user.courses.pull({ _id: req.body.course_id });
+
+    await user.save();
+
+    res.status(200).redirect('/dashboard');
   } catch (error) {
     console.error(error);
 

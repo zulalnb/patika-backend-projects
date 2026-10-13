@@ -25,10 +25,29 @@
                 <img src="/images/blog_single.jpg" alt="" class="img-fluid" />
               </div>
               <div class="post-content">
-                <div class="post-date">
-                  <span class="day">30</span>
-                  <span class="month">Nov</span>
-                </div>
+                <% if (user && user.role === 'student') { %>
+                  <div class="post-date">
+                    <% if (!user.courses.includes(course._id)) { %>
+                      <form method="post" action="/courses/enroll">
+                        <input type="hidden" name="role" value="<%= user.role %>" />
+                        <input type="hidden" name="course_id" value="<%= course._id %>" />
+
+                        <button class="btn btn-lgæ btn-warning text-white text-uppercase">
+                          <span>Enroll</span>
+                        </button>
+                      </form>
+                    <% } else { %>
+                      <form method="post" action="/courses/release">
+                        <input type="hidden" name="role" value="<%= user.role %>" />
+                        <input type="hidden" name="course_id" value="<%= course._id %>" />
+
+                        <button class="btn btn-lgæ btn-danger text-white text-uppercase">
+                          <span>Release</span>
+                        </button>
+                      </form>
+                    <% } %>
+                  </div>
+                <% } %>
                 <div class="meta-info-blog">
                   <span
                     ><i class="fa fa-calendar"></i> <a href="#">May 11, 2015</a>

@@ -40,7 +40,7 @@ app.use(
 
 // Routes
 app.use((req, res, next) => {
-  userIN = req.session.userID;
+  userIN = req.session.userId;
   res.locals.currentPath = req.path;
   next();
 });

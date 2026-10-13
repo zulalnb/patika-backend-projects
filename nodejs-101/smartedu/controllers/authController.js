@@ -53,7 +53,7 @@ exports.loginUser = async (req, res) => {
       });
     }
 
-    req.session.userID = user._id;
+    req.session.userId = user._id;
 
     req.session.save((error) => {
       if (error) {
