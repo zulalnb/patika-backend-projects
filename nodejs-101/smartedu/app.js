@@ -2,11 +2,14 @@ const express = require('express');
 var session = require('express-session');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
 const pageRoute = require('./routes/pageRoute');
 const courseRoute = require('./routes/courseRoute');
 const categoryRoute = require('./routes/categoryRoute');
 const authRoute = require('./routes/authRoute');
+
+dotenv.config();
 
 const port = 3000;
 const app = express();
