@@ -139,3 +139,27 @@ exports.releaseCourse = async (req, res) => {
     });
   }
 };
+
+exports.deleteCourse = async (req, res) => {
+  try {
+    const course = await Course.findByIdAndDelete(req.params.id);
+
+    if (!course) {
+      req.flash('error', 'Course not found.');
+      return res.redirect('/dashboard');
+    }
+
+    await User.updateMany(
+      { courses: course._id },
+      { $pull: { courses: course._id } }
+    );
+
+    req.flash('success', `"${course.name}" has been deleted successfully.`);
+    return res.redirect('/dashboard');
+  } catch (error) {
+    console.error(error);
+
+    req.flash('error', 'Failed to delete course. Please try again.');
+    return res.redirect('/dashboard');
+  }
+};

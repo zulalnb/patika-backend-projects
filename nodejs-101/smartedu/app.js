@@ -2,6 +2,7 @@ const express = require('express');
 var session = require('express-session');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 const dotenv = require('dotenv');
 const flash = require('connect-flash');
 
@@ -27,6 +28,11 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(
+  methodOverride('_method', {
+    methods: ['POST', 'GET'],
+  })
+);
 
 app.use(
   session({

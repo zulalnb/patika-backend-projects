@@ -58,6 +58,7 @@ exports.loginUser = async (req, res) => {
     }
 
     req.session.userId = user._id;
+    req.session.userRole = user.role;
 
     req.session.save((error) => {
       if (error) {

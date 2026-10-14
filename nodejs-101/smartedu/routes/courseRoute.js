@@ -10,6 +10,9 @@ router
 router.route('/').get(courseController.getAllCourses);
 router.route('/:slug').get(courseController.getCourseBySlug);
 router
+  .route('/:id')
+  .delete(roleMiddleware(['teacher', 'admin']), courseController.deleteCourse);
+router
   .route('/enroll')
   .post(roleMiddleware(['student']), courseController.enrollCourse);
 router
