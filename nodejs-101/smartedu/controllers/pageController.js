@@ -21,8 +21,9 @@ exports.getLoginPage = (req, res) => {
 };
 
 exports.sendEmail = async (req, res) => {
-  const receiverEmail = process.env.EMAIL_USER;
-  const outputMessage = `
+  try {
+    const receiverEmail = process.env.EMAIL_USER;
+    const outputMessage = `
       <h1>Mail Details</h1>
       <ul>
         <li>Name: ${req.body.name}</li>
@@ -32,30 +33,37 @@ exports.sendEmail = async (req, res) => {
       <p>${req.body.message}</p>
   `;
 
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-  const info = await transporter.sendMail({
-    from: `"Smart EDU Contact Form" <${process.env.EMAIL_USER}>`,
-    to: receiverEmail,
-    replyTo: req.body.email,
-    subject: 'Smart EDU Contact Form New Message!',
-    html: outputMessage,
-  });
+    const info = await transporter.sendMail({
+      from: `"Smart EDU Contact Form" <${process.env.EMAIL_USER}>`,
+      to: receiverEmail,
+      replyTo: req.body.email,
+      subject: 'Smart EDU Contact Form New Message!',
+      html: outputMessage,
+    });
 
-  console.log('Message sent: %s', info.messageId);
+    console.log('Message sent: %s', info.messageId);
 
-  // Get the Ethereal URL to preview this email
-  const previewUrl = nodemailer.getTestMessageUrl(info);
-  console.log('Preview URL: %s', previewUrl);
-  // Output: https://ethereal.email/message/...
+    // Get the Ethereal URL to preview this email
+    const previewUrl = nodemailer.getTestMessageUrl(info);
+    console.log('Preview URL: %s', previewUrl);
+    // Output: https://ethereal.email/message/...
 
-  res.status(200).redirect('contact');
+    req.flash('success', 'We received your message successfully');
+
+    res.status(200).redirect('contact');
+  } catch (error) {
+    // req.flash('error', `Something went wrong! ${error}`);
+    req.flash('error', "Something went wrong!");
+    res.status(200).redirect('contact');
+  }
 };

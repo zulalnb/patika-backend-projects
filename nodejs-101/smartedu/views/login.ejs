@@ -14,6 +14,18 @@
       <div class="section-title text-center">
         <h3 class="mt-5">LOGIN</h3>
 
+          <% if (flashMessages) { %>
+            <% if (flashMessages.success) { %>
+              <div class="alert alert-success">
+                <%= flashMessages.success %>
+              </div>
+            <% } else if (flashMessages.error) { %>
+              <div class="alert alert-danger">
+                <%= flashMessages.error %>
+              </div>
+            <% } %>
+        <% } %>
+
         <div class="row">
           <div class="col-xl-12 col-md-12 col-sm-12">
             <div class="contact_form">

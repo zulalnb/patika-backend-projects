@@ -3,6 +3,7 @@ var session = require('express-session');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const flash = require('connect-flash');
 
 const pageRoute = require('./routes/pageRoute');
 const courseRoute = require('./routes/courseRoute');
@@ -22,17 +23,14 @@ mongoose.connect('mongodb://localhost/smartedu-test-db').then(() => {
 // Template engine
 app.set('view engine', 'ejs');
 
-// Global variable
-
-global.userIN = null;
-
 // Middleware
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 app.use(
   session({
-    secret: 'session_id',
+    secret: process.env.SECRET_TOKEN,
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
@@ -41,12 +39,17 @@ app.use(
   })
 );
 
-// Routes
+app.use(flash());
+
+// Global template variables
 app.use((req, res, next) => {
-  userIN = req.session.userId;
   res.locals.currentPath = req.path;
+  res.locals.flashMessages = req.flash();
+  res.locals.userIN = req.session.userId || null;
   next();
 });
+
+// Routes
 app.use('/', pageRoute);
 app.use('/courses', courseRoute);
 app.use('/categories', categoryRoute);

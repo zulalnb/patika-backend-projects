@@ -7,29 +7,31 @@ exports.createUser = async (req, res) => {
 
     await User.create({ name, email, role, password });
 
-    res.status(201).redirect('/login');
+    req.flash(
+      'success',
+      'Your account has been created successfully. You can now log in.'
+    );
+    return res.redirect('/login');
   } catch (error) {
     if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        message: 'Validation failed',
-        errors: Object.values(error.errors).map((err) => err.message),
-      });
+      const errors = Object.values(error.errors).map((err) => err.message);
+
+      req.flash('error', errors);
+      return res.redirect('/register');
     }
 
     if (error.code === 11000) {
       const field = Object.keys(error.keyValue)[0];
+      const value = error.keyValue[field];
 
-      return res.status(409).json({
-        message: `A user with this ${field} already exists`,
-        field,
-      });
+      req.flash('error', `A user with ${field} "${value}" already exists.`);
+      return res.redirect('/register');
     }
 
     console.error(error);
 
-    res.status(500).json({
-      message: 'Internal server error',
-    });
+    req.flash('error', 'Something went wrong. Please try again.');
+    return res.redirect('/register');
   }
 };
 
@@ -40,17 +42,15 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).render('login', {
-        error: 'Invalid email or password',
-      });
+      req.flash('error', 'Invalid email or password');
+      return res.redirect('/login');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({
-        message: 'Invalid email or password',
-      });
+      req.flash('error', 'Invalid email or password');
+      return res.redirect('/login');
     }
 
     req.session.userId = user._id;
@@ -58,9 +58,8 @@ exports.loginUser = async (req, res) => {
     req.session.save((error) => {
       if (error) {
         console.error(error);
-        return res.status(500).json({
-          message: 'Internal server error',
-        });
+        req.flash('error', 'Something went wrong. Please try again.');
+        return res.redirect('/login');
       }
 
       return res.redirect('/dashboard');
@@ -68,9 +67,8 @@ exports.loginUser = async (req, res) => {
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
-      message: 'Internal server error',
-    });
+    req.flash('error', 'Something went wrong. Please try again.');
+    return res.redirect('/login');
   }
 };
 

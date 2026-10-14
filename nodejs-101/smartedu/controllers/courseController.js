@@ -6,35 +6,34 @@ exports.createCourse = async (req, res) => {
   try {
     const { name, description, category } = req.body;
 
-    await Course.create({
+    const course = await Course.create({
       name,
       description,
       category,
       user: req.session.userId,
     });
 
-    return res.status(201).redirect('/courses');
+    req.flash('success', `${course.name} has been created successfully`);
+    return res.redirect('/courses');
   } catch (error) {
     if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        message: 'Validation failed',
-        errors: Object.values(error.errors).map((err) => err.message),
-      });
+      const errors = Object.values(error.errors).map((err) => err.message);
+
+      req.flash('error', errors);
+      return res.redirect('/courses');
     }
 
     if (error.code === 11000) {
-      return res.status(409).json({
-        message: 'A course with this name already exists',
-        field: Object.keys(error.keyValue)[0],
-        value: Object.values(error.keyValue)[0],
-      });
-    }
+      const field = Object.keys(error.keyValue)[0];
+      const value = error.keyValue[field];
 
+      req.flash('error', `A course with ${field} "${value}" already exists.`);
+      return res.redirect('/courses');
+    }
     console.error(error);
 
-    return res.status(500).json({
-      message: 'Internal server error',
-    });
+    req.flash('error', 'Something went wrong. Please try again.');
+    return res.redirect('/courses');
   }
 };
 
