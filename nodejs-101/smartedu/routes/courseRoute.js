@@ -13,6 +13,9 @@ router
   .route('/:id')
   .delete(roleMiddleware(['teacher', 'admin']), courseController.deleteCourse);
 router
+  .route('/:id')
+  .put(roleMiddleware(['teacher', 'admin']), courseController.updateCourse);
+router
   .route('/enroll')
   .post(roleMiddleware(['student']), courseController.enrollCourse);
 router

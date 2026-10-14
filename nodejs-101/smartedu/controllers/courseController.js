@@ -102,6 +102,72 @@ exports.getCourseBySlug = async (req, res) => {
   }
 };
 
+exports.deleteCourse = async (req, res) => {
+  try {
+    const course = await Course.findByIdAndDelete(req.params.id);
+
+    if (!course) {
+      req.flash('error', 'Course not found.');
+      return res.redirect('/dashboard');
+    }
+
+    await User.updateMany(
+      { courses: course._id },
+      { $pull: { courses: course._id } }
+    );
+
+    req.flash('success', `"${course.name}" has been deleted successfully.`);
+    return res.redirect('/dashboard');
+  } catch (error) {
+    console.error(error);
+
+    req.flash('error', 'Failed to delete course. Please try again.');
+    return res.redirect('/dashboard');
+  }
+};
+
+exports.updateCourse = async (req, res) => {
+  try {
+    const { name, description, category } = req.body;
+
+    const course = await Course.findByIdAndUpdate(
+      req.params.id,
+      { name, description, category },
+      {
+        returnDocument: 'after',
+        runValidators: true,
+      }
+    );
+
+    if (!course) {
+      req.flash('error', 'Course not found.');
+      return res.redirect('/dashboard');
+    }
+
+    req.flash('success', `"${course.name}" has been updated successfully.`);
+    return res.redirect('/dashboard');
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      req.flash('error', errors);
+      return res.redirect('/dashboard');
+    }
+
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      const value = error.keyValue[field];
+
+      req.flash('error', `A course with ${field} "${value}" already exists.`);
+      return res.redirect('/dashboard');
+    }
+
+    console.error(error);
+
+    req.flash('error', 'Failed to update course. Please try again.');
+    return res.redirect('/dashboard');
+  }
+};
+
 exports.enrollCourse = async (req, res) => {
   try {
     const courseId = req.body.course_id;
@@ -137,29 +203,5 @@ exports.releaseCourse = async (req, res) => {
     return res.status(500).json({
       message: 'Internal server error',
     });
-  }
-};
-
-exports.deleteCourse = async (req, res) => {
-  try {
-    const course = await Course.findByIdAndDelete(req.params.id);
-
-    if (!course) {
-      req.flash('error', 'Course not found.');
-      return res.redirect('/dashboard');
-    }
-
-    await User.updateMany(
-      { courses: course._id },
-      { $pull: { courses: course._id } }
-    );
-
-    req.flash('success', `"${course.name}" has been deleted successfully.`);
-    return res.redirect('/dashboard');
-  } catch (error) {
-    console.error(error);
-
-    req.flash('error', 'Failed to delete course. Please try again.');
-    return res.redirect('/dashboard');
   }
 };
