@@ -1,5 +1,6 @@
-const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const { validationResult } = require('express-validator');
+const User = require('../models/User');
 
 exports.createUser = async (req, res) => {
   try {
@@ -14,10 +15,13 @@ exports.createUser = async (req, res) => {
     return res.redirect('/login');
   } catch (error) {
     if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map((err) => err.message);
+      const errors = validationResult(req);
 
-      req.flash('error', errors);
-      return res.redirect('/register');
+      for (let i = 0; i < errors.array().length; i++) {
+        req.flash('error', errors.array()[i].msg);
+      }
+
+      return res.status(400).redirect('/register');
     }
 
     if (error.code === 11000) {
@@ -43,14 +47,14 @@ exports.loginUser = async (req, res) => {
 
     if (!user) {
       req.flash('error', 'Invalid email or password');
-      return res.redirect('/login');
+      return res.status(400).redirect('/login');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       req.flash('error', 'Invalid email or password');
-      return res.redirect('/login');
+      return res.status(400).redirect('/login');
     }
 
     req.session.userId = user._id;
@@ -62,7 +66,7 @@ exports.loginUser = async (req, res) => {
         return res.redirect('/login');
       }
 
-      return res.redirect('/dashboard');
+      return res.status(200).redirect('/dashboard');
     });
   } catch (error) {
     console.error(error);

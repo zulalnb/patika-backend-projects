@@ -45,7 +45,7 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
   res.locals.flashMessages = req.flash();
-  res.locals.userIN = req.session.userId || null;
+  res.locals.userIN = !!req.session.userId;
   next();
 });
 
