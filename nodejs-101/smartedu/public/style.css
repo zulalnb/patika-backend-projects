@@ -1759,6 +1759,11 @@ a img.aligncenter {
 
 .message-box p {
   margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
 }
 
 .message-box .lead {

@@ -1,7 +1,21 @@
 const nodemailer = require('nodemailer');
+const Course = require('../models/Course');
+const User = require('../models/User');
 
-exports.getHomePage = (req, res) => {
-  res.status(200).render('index');
+exports.getHomePage = async (req, res) => {
+  try {
+    const [totalCourses, courses, totalStudents, totalTeachers] =
+      await Promise.all([
+        Course.find().countDocuments(),
+        Course.find().sort({ createdAt: -1 }).limit(2),
+        User.countDocuments({ role: 'student' }),
+        User.countDocuments({ role: 'teacher' }),
+      ]);
+
+    res
+      .status(200)
+      .render('index', { courses, totalCourses, totalStudents, totalTeachers });
+  } catch (error) {}
 };
 
 exports.getAboutPage = (req, res) => {
@@ -63,7 +77,7 @@ exports.sendEmail = async (req, res) => {
     res.status(200).redirect('contact');
   } catch (error) {
     // req.flash('error', `Something went wrong! ${error}`);
-    req.flash('error', "Something went wrong!");
+    req.flash('error', 'Something went wrong!');
     res.status(200).redirect('contact');
   }
 };

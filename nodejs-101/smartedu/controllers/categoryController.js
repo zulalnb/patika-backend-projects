@@ -1,4 +1,6 @@
 const Category = require('../models/Category');
+const Course = require('../models/Course');
+const User = require('../models/User');
 
 exports.createCategory = async (req, res) => {
   try {
@@ -6,29 +8,55 @@ exports.createCategory = async (req, res) => {
 
     const category = await Category.create({ name });
 
-    return res
-      .status(201)
-      .json({ message: 'Category created successfully', category });
+    req.flash('success', `"${category.name}" category created successfully.`);
+    return res.redirect('/dashboard');
   } catch (error) {
     if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        message: 'Validation failed',
-        errors: Object.values(error.errors).map((err) => err.message),
-      });
+      const errors = Object.values(error.errors).map((err) => err.message);
+
+      req.flash('error', errors);
+      return res.redirect('/dashboard');
     }
 
     if (error.code === 11000) {
       const field = Object.keys(error.keyValue)[0];
-      return res.status(409).json({
-        message: `A category with this ${field} already exists`,
-        field,
-      });
+
+      req.flash('error', `A category with this ${field} already exists.`);
+      return res.redirect('/dashboard');
     }
 
     console.error(error);
 
-    return res.status(500).json({
-      message: 'Internal server error',
-    });
+    req.flash('error', 'Failed to create category. Please try again.');
+    return res.redirect('/dashboard');
+  }
+};
+
+exports.deleteCategory = async (req, res) => {
+  try {
+    const category = await Category.findByIdAndDelete(req.params.id);
+
+    if (!category) {
+      req.flash('error', 'Category not found.');
+      return res.redirect('/dashboard');
+    }
+
+    // Remove the deleted category reference from its courses.
+    await Course.updateMany(
+      { category: category._id },
+      { $unset: { category: 1 } }
+    );
+
+    req.flash(
+      'success',
+      `"${category.name}" category has been deleted successfully.`
+    );
+
+    return res.redirect('/dashboard');
+  } catch (error) {
+    console.error(error);
+
+    req.flash('error', 'Failed to delete category. Please try again.');
+    return res.redirect('/dashboard');
   }
 };
