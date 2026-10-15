@@ -87,82 +87,60 @@
       </div>
     </div>
 
-    <div id="overviews" class="section wb">
-      <div class="container">
-        <div class="section-title row text-center">
-          <div class="col-md-8 offset-md-2">
-            <h3>Latest Courses</h3>
-            <p class="lead">
-              Lorem Ipsum dolroin gravida nibh vel velit auctor aliquet. Aenean
-              sollicitudin, lorem quis bibendum auctor, nisi elit consequat
-              ipsum, nec sagittis sem!
-            </p>
+    <% if (courses.length > 0) { %>
+      <div id="overviews" class="section wb">
+        <div class="container">
+          <div class="section-title row text-center">
+            <div class="col-md-8 offset-md-2">
+              <h3>Latest Courses</h3>
+              <p class="lead"> 
+                Lorem Ipsum dolroin gravida nibh vel velit auctor aliquet. Aenean
+                sollicitudin, lorem quis bibendum auctor, nisi elit consequat
+                ipsum, nec sagittis sem!
+              </p>
+            </div>
           </div>
+
+          <% for (let i = 0; i < Math.min(courses.length, 2); i++) { %>
+            <div class="row align-items-center">
+              <% if (i === 0) { %>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                  <div class="message-box">
+                    <h2><%= courses[i].name %></h2>
+                    <p><%= courses[i].description %></p>
+                    <a href="/courses/<%= courses[i].slug %>" class="hover-btn-new orange">
+                      <span>Learn More</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                  <div class="post-media wow fadeIn">
+                    <img src="/images/about_02.jpg" alt="" class="img-fluid img-rounded" />
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                  <div class="post-media wow fadeIn">
+                    <img src="/images/about_03.jpg" alt="" class="img-fluid img-rounded" />
+                  </div>
+                </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                  <div class="message-box">
+                    <h2><%= courses[i].name %></h2>
+                    <p><%= courses[i].description %></p>
+                    <a href="/courses/<%= courses[i].slug %>" class="hover-btn-new orange">
+                      <span>Learn More</span>
+                    </a>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          <% } %>
         </div>
-        <!-- end title -->
-
-        <div class="row align-items-center">
-          <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-            <div class="message-box">
-              <h2><%= courses[0].name %></h2>
-              <p><%= courses[0].description %></p>
-
-              <a
-                href="/courses/<%= courses[0].slug %>"
-                class="hover-btn-new orange"
-              >
-                <span>Learn More</span>
-              </a>
-            </div>
-            <!-- end messagebox -->
-          </div>
-          <!-- end col -->
-
-          <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-            <div class="post-media wow fadeIn">
-              <img
-                src="/images/about_02.jpg"
-                alt=""
-                class="img-fluid img-rounded"
-              />
-            </div>
-            <!-- end media -->
-          </div>
-          <!-- end col -->
-        </div>
-        <div class="row align-items-center">
-          <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-            <div class="post-media wow fadeIn">
-              <img
-                src="/images/about_03.jpg"
-                alt=""
-                class="img-fluid img-rounded"
-              />
-            </div>
-            <!-- end media -->
-          </div>
-          <!-- end col -->
-
-          <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-            <div class="message-box">
-              <h2><%= courses[1].name %></h2>
-              <p><%= courses[1].description %></p>
-
-              <a
-                href="/courses/<%= courses[0].slug %>"
-                class="hover-btn-new orange"
-              >
-                <span>Learn More</span>
-              </a>
-            </div>
-            <!-- end messagebox -->
-          </div>
-          <!-- end col -->
-        </div>
-        <!-- end row -->
       </div>
-      <!-- end container -->
-    </div>
+    <% } %>
     <!-- end section -->
 
     <div class="section cl">
