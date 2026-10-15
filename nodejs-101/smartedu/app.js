@@ -14,11 +14,13 @@ const userRoute = require('./routes/userRoute');
 
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
+
 const app = express();
 
 // connect DB
-mongoose.connect('mongodb://localhost/smartedu-test-db').then(() => {
+mongoose.connect(MONGODB_URI).then(() => {
   console.log('DB Connected!');
 });
 
@@ -41,7 +43,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
-      mongoUrl: 'mongodb://localhost/smartedu-test-db',
+      mongoUrl: MONGODB_URI,
     }),
   })
 );
@@ -64,5 +66,5 @@ app.use('/courses', courseRoute);
 app.use('/categories', categoryRoute);
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Example app listening at http://localhost:${PORT}`);
 });
